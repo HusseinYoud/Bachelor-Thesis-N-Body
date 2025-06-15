@@ -1,0 +1,107 @@
+_size = 64
+# Input
+initial_conditions = {
+    'species': 'matter',          #we are only looking at matter
+    'N'      : _size**3,     #64^3 = 262144
+}
+
+# Output
+output_dirs = {
+    'snapshot': f'{path.output_dir}/{_tag}/snapshots',
+    'powerspec': f'{path.output_dir}/{_tag}/powerspec',
+}
+output_times = {
+    'snapshot' : [1.0],
+    'powerspec' : [1.0],
+}
+
+#Changed 'corrected' from False to True
+powerspec_select = {
+    'default': {
+        'data'     : True,
+        'corrected': True,
+        'linear'   : True,
+        'plot'     : True,
+    },
+}
+
+#Powerspec options, most used here are purely the default values taken from github. --------------------------  #https://jmd-dk.github.io/concept/parameters/numerics.html#powerspec-options
+powerspec_options= {
+    'upstream gridsize': {
+        'particles': 'cbrt(Ñ)', #Normally set to 2*cbrt(N), but globalgrid is defined from the upstream gridsize: https://jmd-dk.github.io/concept/parameters/numerics.html#powerspec-options #The note
+        'fluid'    : 'gridsize', #Though hopefully since we only look at "matter" no fluids are part of the simulation.
+    },
+    'global gridsize': {},
+    'interpolation': {
+        'default': 'CIC',      #Changed from 'PCS' to 'CIC' to match, wanted results. 
+    },
+    'deconvolve': {
+        'default': True,        #There is an example that says to set this to False for cloud in cell?
+    },
+    'interlace': {
+        'default': True,     
+    },
+    'realization correction': {
+        'default': True,
+    },
+    'k_max': {
+        'default': 'nyquist',
+    },
+    'bins per decade': {
+        'default': {
+            '  4*k_min':  4,
+            '100*k_min': 40,
+        },
+    },
+    'tophat': {
+        'default': 8*Mpc/h,
+    },
+    'significant figures': {
+        'default': 8,
+    },
+}
+
+# Numerics
+boxsize = 1000*Mpc
+potential_options = {
+    'gridsize': _size,
+    'differentiation': {
+        'all': {
+            'gravity': {
+                'pm': 'Fourier',
+            },
+        },
+    },
+    'interpolation': {
+        'gravity': {
+            'pm': 'CIC',
+        },
+    },
+    'deconvolve': {
+        'gravity': {
+            'pm': (True, True),
+        },
+    },
+    'interlace': {
+        'gravity': {
+            'pm': (True, True),
+        },
+    },
+}
+
+# Physics
+select_forces = {
+    'matter': {'gravity': 'pm'},
+}
+
+
+#Cosmology matching with CLASS
+H0   = 67.36*km/(s*Mpc)
+Ωb   = 0.02237 /h**2
+Ωcdm = 0.12 /h**2
+a_begin = 0.02
+
+primordial_spectrum = {
+    'A_s': 2.105e-9,
+    'n_s': 0.9649,
+}

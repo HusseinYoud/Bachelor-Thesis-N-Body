@@ -1,0 +1,95 @@
+#Til at indsætte i neural netværk.
+
+_size = 32
+_tag = f"NNPM32_As{primordial_spectrum['A_s']:.2e}"
+# Input
+initial_conditions = {
+    'species': 'matter',
+    'N'      : _size**3,
+}
+
+# Output
+output_dirs = {
+    'snapshot': f'{path.output_dir}/{_tag}/snapshots',
+}
+output_times = {
+    'snapshot' : [1.0],
+}
+
+powerspec_select = {
+    'default': {
+        'data'     : True,
+        'corrected': True,
+        'linear'   : True,
+        'plot'     : True,
+    },
+}
+
+powerspec_options= {
+    'upstream gridsize': {
+        'particles': 'cbrt(Ñ)',
+    },
+    'interpolation': {
+        'default': 'CIC',
+    },
+    'deconvolve': {
+        'default': True,
+    },
+    'interlace': {
+        'default': True,
+    },
+    'realization correction': {
+        'default': True,
+    },
+    'k_max': {
+        'default': 'nyquist',
+    },
+}
+
+
+
+# Numerics
+boxsize = 500*Mpc
+potential_options = {
+    'gridsize': _size,
+    'differentiation': {
+        'all': {
+            'gravity': {
+                'p3m': 'Fourier',
+            },
+        },
+    },
+    'interpolation': {
+        'gravity': {
+            'p3m': 'CIC',
+        },
+    },
+    'deconvolve': {
+        'gravity': {
+            'p3m': (True, True),
+        },
+    },
+    'interlace': {
+        'gravity': {
+            'p3m': (True, True),
+        },
+    },
+}
+
+
+# Physics
+select_forces = {
+    'matter': {'gravity': 'p3m'},
+}
+
+
+# Cosmology matchet med Cosmo Data Create 
+H0   = 67.36*km/(s*Mpc)
+Ωb   = 0.02237 /h**2
+Ωcdm = 0.12 /h**2
+a_begin = 0.02
+
+primordial_spectrum = {
+    'A_s': 2.105e-9,
+    'n_s': 0.9649,
+}

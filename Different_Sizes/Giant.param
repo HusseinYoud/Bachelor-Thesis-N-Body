@@ -1,0 +1,85 @@
+try:
+    _size            
+except NameError:
+    _size = 256      
+_tag  = f'3giant{_size}pm'
+_lpt  = 1
+
+# Input
+initial_conditions = {
+    'species': 'matter',
+    'N'      : _size**3,
+}
+
+# Output
+output_dirs = {
+    'snapshot': f'{path.output_dir}/{_tag}/snapshots',
+    'autosave' : f'{path.ic_dir}/{_tag}/autosave',
+}
+output_times = {
+    'snapshot': [1.0],
+}
+
+# Numerics
+boxsize = 1000*Mpc
+fftw_wisdom_rigor = 'patient'
+fftw_wisdom_share = True
+fftw_wisdom_reuse = True
+potential_options = {
+    'gridsize': {
+        'global': {_size},
+        'particles': {
+            'gravity': {
+                'pm':  ['cbrt(N)',  'cbrt(N)'],
+                'p3m':['cbrt(N)',  'cbrt(N)'],
+            }
+        },
+        'fluid': {
+            'gravity': {
+                'pm':  ['gridsize','gridsize'],
+                'p3m':['gridsize','gridsize'],
+            }
+        }
+    },
+
+    'interlace': {
+        'gravity': {
+            'pm':  (True, True),
+            'p3m': (True, True),
+        }
+    },
+
+    
+    'deconvolve': {
+        'gravity': {
+            'pm':  (True, True),
+            'p3m': (True, True)   
+        }
+    },
+}
+
+
+cell_centered = False                       # vertex-diskretisering
+autosave_interval = 6*hr
+
+# Fysikken
+select_forces = {
+    'matter': {'gravity': 'pm'},
+}
+
+realization_options = {
+    'LPT': _lpt,
+}
+
+
+# Cosmology
+H0   = 67.36*km/(s*Mpc)
+Ωb   = 0.02237 /h**2
+Ωcdm = 0.12 /h**2
+a_begin = 0.02
+
+primordial_spectrum = {
+    'A_s': 2.1e-9,
+    'n_s': 0.9649,
+}
+
